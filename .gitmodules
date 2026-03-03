@@ -1,0 +1,3 @@
+[submodule "Packages/rapier4unity"]
+	path = Packages/rapier4unity
+	url = https://github.com/christides11/rapier4unity.git
