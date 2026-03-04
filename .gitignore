@@ -151,3 +151,4 @@ crashlytics-build.properties
 ##
 *.chm*
 nuget.config
+/.utmp
