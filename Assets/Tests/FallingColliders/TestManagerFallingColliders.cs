@@ -6,22 +6,23 @@ using UnityEngine;
 
 public class TestManagerFallingColliders : TestManagerBase
 {
-    public TextMeshProUGUI hashcode;
+    public TextMeshProUGUI startHashcode;
+    public TextMeshProUGUI endHashcode;
 
     public RapierBody bodyPrefab;
 
     List<RapierBody> spawnedBodies = new List<RapierBody>();
     public List<RapierBody> sceneColliders = new List<RapierBody>();
-    public List<int> hashCodes = new List<int>();
 
     public int ticksToTest = 120;
     public Vector3 spawnPosition = new Vector3(0, 10, 0);
+
+    public ulong startHash;
+    public ulong endHash;
     
     public void Awake()
     {
         Physics.simulationMode = SimulationMode.Script;
-        GenerateHashCode();
-        hashcode.text = hashCodes[^1].ToString();
     }
 
     public void TestDebug()
@@ -40,17 +41,26 @@ public class TestManagerFallingColliders : TestManagerBase
     {
         try
         {
+            startHash = RapierDebug.GetPhysicsWorldHash();
+            Debug.Log($"Start: {startHash.ToString()}");
+            startHashcode.text = startHash.ToString();
+            
             while (cnt < ticksToTest)
             {
                 await Awaitable.FixedUpdateAsync();
                 RapierLoop.Tick();
-                GenerateHashCode();
+                //GenerateHashCode();
                 cnt++;
-                hashcode.text = hashCodes[^1].ToString();
                 var go = GameObject.Instantiate(bodyPrefab, spawnPosition, Quaternion.identity);
                 go.RegisterBody();
                 spawnedBodies.Add(go);
             }
+
+            endHash = RapierDebug.GetPhysicsWorldHash();
+            Debug.Log($"Final: {endHash.ToString()}");
+            endHashcode.text = endHash.ToString();
+            cnt = 0;
+            
         }
         catch (Exception e)
         {
@@ -59,6 +69,7 @@ public class TestManagerFallingColliders : TestManagerBase
         }
     }
 
+    /*
     void GenerateHashCode()
     {
         int hc = 0;
@@ -76,8 +87,7 @@ public class TestManagerFallingColliders : TestManagerBase
             hc = GetNonRandomHashcode(hc, gotHashcode);
         }
         
-        hashCodes.Add(hc);
-        Debug.Log(hc);
+        //hashCodes.Add(hc);
     }
 
     int GetRigidbodyHashCode(Rigidbody rb)
@@ -91,5 +101,5 @@ public class TestManagerFallingColliders : TestManagerBase
         hc = (hc * 37) + a;
         hc = (hc * 37) + b;
         return hc;
-    }
+    }*/
 }
